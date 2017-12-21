@@ -3,7 +3,7 @@ import scipy as sp
 import pandas as pd
 import datetime
 import statsmodels.api as sm
-import anomaly_detect_ts
+from anomaly_detection import anomaly_detect_ts
 
 '''
 Description:
@@ -147,7 +147,7 @@ def anomaly_detect_vec(x, max_anoms=0.1, direction="pos", alpha=0.05,
                        y_log=False, xlabel="", ylabel="count", title="",
                        verbose=False):
 
-    assert isinstance(x) == pd.Series, 'x must be pandas series'
+    assert isinstance(x, pd.Series), 'x must be pandas series'
     assert max_anoms < 0.5, 'max_anoms must be < 0.5'
     assert direction in ['pos', 'neg', 'both'], 'direction should be one of "pos", "neg", "both"'
     assert period, "Period must be set to the number of data points in a single period"
@@ -193,3 +193,22 @@ def anomaly_detect_vec(x, max_anoms=0.1, direction="pos", alpha=0.05,
 
     all_anoms.drop_duplicates(inplace=True)
     seasonal_plus_trend.drop_duplicates(inplace=True)
+
+
+def dparserfunc(date):
+    return pd.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+
+
+test_data = pd.read_csv('~/Git/GH/AnomalyDetection/tests/test_data.csv',
+                        index_col='timestamp', parse_dates=True, squeeze=True,
+                        date_parser=dparserfunc)
+
+test_kiwi = pd.read_csv('~/Desktop/kiwi_to_py.csv', index_col='time',
+                        parse_dates=True, squeeze=True,
+                        date_parser=dparserfunc)
+
+
+
+test_res = anomaly_detect_vec(test_kiwi, max_anoms=0.05, direction="both",
+                              alpha=0.05, period=24, only_last=False,
+                              plot=False)
