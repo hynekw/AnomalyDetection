@@ -17,7 +17,7 @@ Usage:
        period = NULL, only_last = F, threshold = "None", e_value = F,
        longterm_period = NULL, plot = F, y_log = F, xlabel = "",
        ylabel = "count", title = NULL, verbose = FALSE)
-     
+
 Arguments:
 
        x: Time series as a column data frame, list, or vector, where
@@ -124,11 +124,12 @@ See Also:
 Examples:
 
      data(raw_data)
-     AnomalyDetectionVec(raw_data[,2], max_anoms=0.02, period=1440, direction='both', plot=TRUE)
+     AnomalyDetectionVec(raw_data[,2], max_anoms=0.02, period=1440,
+                         direction='both', plot=TRUE)
      # To detect only the anomalies in the last period, run the following:
-     AnomalyDetectionVec(raw_data[,2], max_anoms=0.02, period=1440, direction='both',
-     only_last=TRUE, plot=TRUE)
-     
+     AnomalyDetectionVec(raw_data[,2], max_anoms=0.02, period=1440,
+                         direction='both', only_last=TRUE, plot=TRUE)
+
 
 
 
@@ -141,9 +142,10 @@ def __verbose_if(condition, *args, **kwargs):
 
 
 def anomaly_detect_vec(x, max_anoms=0.1, direction="pos", alpha=0.05,
-                       period=None, only_last=False, threshold=None, e_value=False,
-                       longterm_period=None, plot=False, y_log=False, xlabel="",
-                       ylabel="count", title="", verbose=False):
+                       period=None, only_last=False, threshold=None,
+                       e_value=False, longterm_period=None, plot=False,
+                       y_log=False, xlabel="", ylabel="count", title="",
+                       verbose=False):
 
     assert isinstance(x) == pd.Series, 'x must be pandas series'
     assert max_anoms < 0.5, 'max_anoms must be < 0.5'
@@ -165,8 +167,9 @@ def anomaly_detect_vec(x, max_anoms=0.1, direction="pos", alpha=0.05,
     seasonal_plus_trend = pd.Series()
     for ts in all_data:
         tmp = anomaly_detect_ts._detect_anoms(
-            ts, k=max_anoms, alpha=alpha, num_obs_per_period=period, use_decomp=True,
-            use_esd=False, direction=direction, verbose=verbose)
+            ts, k=max_anoms, alpha=alpha, num_obs_per_period=period,
+            use_decomp=True, use_esd=False, direction=direction,
+            verbose=verbose)
 
         s_h_esd_timestamps = tmp['anoms']
         data_decomp = tmp['stl']
@@ -190,4 +193,3 @@ def anomaly_detect_vec(x, max_anoms=0.1, direction="pos", alpha=0.05,
 
     all_anoms.drop_duplicates(inplace=True)
     seasonal_plus_trend.drop_duplicates(inplace=True)
-    
